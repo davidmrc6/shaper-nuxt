@@ -29,14 +29,6 @@ const handleSubmit = () => {
     <div class="text-2xl flex py-6 flex-col font-parkinsans w-6/12 mx-auto">
       <div v-if="error" class="flex flex-col text-red-500 text-base mb-4 text-center">
         {{ error.toLowerCase() }}
-        <span class="text-white">
-          new? sign up
-          <button
-            @click=""
-          >
-            <span class="text-gray-400 hover:text-white font-bold transition-all duration-200"> here</span>
-          </button>
-        </span>
       </div>
 
       <input
@@ -62,9 +54,16 @@ const handleSubmit = () => {
         :disabled="loading"
       >
         <span class="text-gray-400 hover:text-white font-bold transition-all duration-200">
-          {{ loading ? 'Logging in...' : 'login' }}
+          {{ loading ? 'logging in...' : 'login' }}
         </span>
       </button>
+
+      <div class="text-sm text-gray-400 text-center mt-4">
+        new around here?
+        <NuxtLink to="/register" class="text-white hover:underline">
+          <span class="text-gray-400 hover:text-white font-bold transition-all duration-200">sign up</span>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>

@@ -4,6 +4,10 @@ import { useAuthStore } from "~/stores/auth";
 
 import LoginForm from "~/components/LoginForm.vue";
 
+definePageMeta({
+  middleware: ['clear-errors']
+})
+
 const router = useRouter()
 const authStore = useAuthStore()
 const { error, loading } = storeToRefs(authStore)
@@ -24,9 +28,10 @@ const handleLogin = async (credentials) => {
       </h1>
 
       <LoginForm
-      :loading="loading"
-      :error="error"
-      :on-submit="handleLogin" />
+        :loading="loading"
+        :error="error"
+        :on-submit="handleLogin"
+      />
     </div>
   </div>
 </template>

@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
     // Get user from database
     const result = await query(
-      'SELECT * FROM users WHERE email = $1',
+      'SELECT * FROM users WHERE username = $1 OR email = $1',
       [username]
     )
 
