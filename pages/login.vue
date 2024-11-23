@@ -15,7 +15,7 @@ const { error, loading } = storeToRefs(authStore)
 const handleLogin = async (credentials) => {
   const success = await authStore.login(credentials)
   if (success) {
-    router.push('/')
+    router.push(`/profile/${authStore.user.id}`)
   }
 };
 </script>

@@ -1,15 +1,28 @@
-import { defineStore } from "pinia"
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     error: null,
-    loading: false
+    loading: false,
+    initialized: false
   }),
 
   actions: {
     clearError() {
       this.error = null
+    },
+
+    async checkAuth() {
+      try {
+        const response = await $fetch('/api/auth/me')
+        if (response.status === 200) {
+          this.user = response.body.user
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('Auth check error:', error)
+        return false
+      }
     },
 
     async register(credentials) {
@@ -23,7 +36,6 @@ export const useAuthStore = defineStore('auth', {
         })
 
         if (response.status === 201) {
-          // Automatically log in after successful registration
           await this.login({
             username: credentials.username,
             password: credentials.password
@@ -47,7 +59,6 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
 
       try {
-        // Validate inputs
         if (!credentials.username || !credentials.password) {
           this.error = 'Username and password are required'
           return false
@@ -74,8 +85,13 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    logout() {
-      this.user = null
+    async logout() {
+      try {
+        await $fetch('/api/auth/logout', { method: 'POST' })
+        this.user = null
+      } catch (error) {
+        console.error('Logout error:', error)
+      }
     }
   }
 })

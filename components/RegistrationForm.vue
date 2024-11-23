@@ -69,7 +69,7 @@ const handleSubmit = () => {
 
       <div class="text-sm text-gray-400 text-center mt-4">
         already have an account?
-        <NuxtLink to="/login" class="text-white hover:underline">
+        <NuxtLink to="/login">
           <span class="text-gray-400 hover:text-white font-bold transition-all duration-200">log in</span>
         </NuxtLink>
       </div>
