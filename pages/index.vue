@@ -2,6 +2,10 @@
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 
+definePageMeta({
+  layout: 'default'
+})
+
 const router = useRouter()
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)

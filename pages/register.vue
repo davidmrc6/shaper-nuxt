@@ -5,7 +5,8 @@ import { useAuthStore } from "~/stores/auth";
 import RegistrationForm from '~/components/RegistrationForm.vue';
 
 definePageMeta({
-  middleware: ['clear-errors']
+  middleware: ['clear-errors'],
+  layout: 'default'
 })
 
 const router = useRouter()

@@ -7,6 +7,11 @@ const router = useRouter()
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)
 
+definePageMeta({
+  layout: 'default'
+})
+
+
 const profileData = ref({
   username: '',
   bio: '',
@@ -74,6 +79,10 @@ const handleLoginSubmit = () => {
   router.push('/login')
 }
 
+const handleProfileSubmit = () => {
+  router.push(`/profile/${user.value.id}`)
+}
+
 // Initialize auth on page load
 onMounted(async () => {
   await authStore.initialize()
@@ -127,6 +136,7 @@ onMounted(async () => {
           v-if="isUserSettingsOpen"
           :handle-logout="handleLogout"
           :handle-login-submit="handleLoginSubmit"
+          :handle-profile-submit="handleProfileSubmit"
           :currentUser="user"
           :show-user-settings="showUserSettings"
           class="absolute top-0 left-full ml-4 w-48"
