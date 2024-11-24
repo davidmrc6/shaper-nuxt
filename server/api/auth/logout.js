@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  deleteCookie(event, 'auth-token', {
+  deleteCookie(event, 'auth_token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     path: '/'

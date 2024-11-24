@@ -6,9 +6,20 @@ export const useAuthStore = defineStore('auth', {
     initialized: false
   }),
 
+  getters: {
+    isAuthenticated: (state) => !!state.user && state.initialized
+  },
+
   actions: {
     clearError() {
       this.error = null
+    },
+
+    async initialize() {
+      if (!this.initialized) {
+        await this.checkAuth()
+        this.initialized = true
+      }
     },
 
     async checkAuth() {
@@ -18,9 +29,11 @@ export const useAuthStore = defineStore('auth', {
           this.user = response.body.user
           return true
         }
+        this.user = null
         return false
       } catch (error) {
         console.error('Auth check error:', error)
+        this.user = null
         return false
       }
     },
@@ -71,6 +84,7 @@ export const useAuthStore = defineStore('auth', {
 
         if (response.status === 200) {
           this.user = response.body.user
+          this.initialized = true
           return true
         } else {
           this.error = response.body.message
@@ -87,10 +101,16 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
-        await $fetch('/api/auth/logout', { method: 'POST' })
-        this.user = null
+        const response = await $fetch('/api/auth/logout', { method: 'POST' })
+        if (response.status === 200) {
+          this.user = null
+          this.initialized = false
+          return true
+        }
+        return false
       } catch (error) {
         console.error('Logout error:', error)
+        return false
       }
     }
   }

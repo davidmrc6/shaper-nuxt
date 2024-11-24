@@ -5,18 +5,25 @@ import { useAuthStore } from '~/stores/auth'
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
-const { user } = storeToRefs(authStore)
+const { user, isAuthenticated } = storeToRefs(authStore)
 
 const profileData = ref({
+  username: '',
   bio: '',
   displayName: ''
 })
 const isEditing = ref(false)
 const error = ref(null)
+const isUserSettingsOpen = ref(false)
 
 // Check if current user is profile owner
 const isOwner = computed(() => {
   return user.value?.id === parseInt(route.params.id)
+})
+
+// Check if we can show user settings
+const showUserSettings = computed(() => {
+  return isAuthenticated.value
 })
 
 // Fetch profile data
@@ -25,6 +32,9 @@ const fetchProfile = async () => {
     const response = await $fetch(`/api/profile/${route.params.id}`)
     if (response.status === 200) {
       profileData.value = response.body.profile
+    }
+    if (response.status === 404) {
+      router.push(`/profile/${user.value.id}`)
     }
   } catch (error) {
     error.value = 'Failed to load profile'
@@ -48,84 +58,80 @@ const updateProfile = async () => {
   }
 }
 
-const handleLogout =  () => {
-  const success = authStore.logout()
+const handleUserSettings = () => {
+  isUserSettingsOpen.value = !isUserSettingsOpen.value
+}
+
+const handleLogout = async () => {
+  const success = await authStore.logout()
   if (success) {
+    isUserSettingsOpen.value = false
     router.push('/login')
   }
 }
 
-onMounted(() => {
+const handleLoginSubmit = () => {
+  router.push('/login')
+}
+
+// Initialize auth on page load
+onMounted(async () => {
+  await authStore.initialize()
   fetchProfile()
 })
 </script>
 
 <template>
-  <div class="flex justify-center items-center min-h-screen bg-neutral-900">
-    <div class="w-full max-w-4xl px-4 sm:px-6 lg:px-8">
-      <div class="text-2xl flex py-6 flex-col font-parkinsans w-6/12 mx-auto">
-        <button
-          @click="handleLogout"
-          class="bg-transparent block h-max w-max border-none mx-auto py-3 text-gray-400 hover:text-white transition-all duration-200"
-        >
-        log out
-        </button>
-        <div class="max-w-4xl mx-auto bg-neutral-800 rounded-lg p-6">
-          <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
+  <div class="flex min-h-screen bg-neutral-900 relative">
+    <div class="relative flex mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 font-parkinsans">
 
-          <div v-if="!isEditing">
-            <h1 class="text-3xl text-white mb-6">Profile</h1>
-            <div class="space-y-4">
-              <p class="text-white">Display Name: {{ profileData.displayName }}</p>
-              <p class="text-white">Bio: {{ profileData.bio }}</p>
-
-              <button
-                v-if="isOwner"
-                @click="isEditing = true"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Edit Profile
-              </button>
-            </div>
-          </div>
-
-          <form v-else @submit.prevent="updateProfile" class="space-y-4">
-            <div>
-              <label class="block text-white mb-2">Display Name</label>
-              <input
-                v-model="profileData.displayName"
-                type="text"
-                class="w-full p-2 rounded bg-neutral-700 text-white"
-              />
-            </div>
-
-            <div>
-              <label class="block text-white mb-2">Bio</label>
-              <textarea
-                v-model="profileData.bio"
-                class="w-full p-2 rounded bg-neutral-700 text-white"
-                rows="4"
-              />
-            </div>
-
-            <div class="flex space-x-4">
-              <button
-                type="submit"
-                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                @click="isEditing = false"
-                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
+      <!-- Left gradient -->
+      <div class="absolute left-0 top-0 w-0.5 h-full">
+        <div class="absolute inset-0 bg-gray-500" />
+        <div class="absolute inset-0 bg-gradient-to-b from-neutral-900 via-transparent via-50% to-neutral-900" />
       </div>
+      <!-- Right gradient -->
+      <div class="absolute right-0 top-0 w-0.5 h-full">
+        <div class="absolute inset-0 bg-gray-500" />
+        <div class="absolute inset-0 bg-gradient-to-b from-neutral-900 via-transparent via-50% to-neutral-900" />
+      </div>
+
+      <!-- Content -->
+      <Canvas
+        :profile="profileData"
+      />
+
     </div>
-</div>
+    <div class="absolute top-1/2 -translate-y-1/2 flex flex-col gap-4 ml-6">
+      <button
+        class="text-5xl text-gray-400 hover:text-white transition-all duration-200"
+      >
+        <Icon name="mdi-light:plus-circle" />
+      </button>
+      <button
+        @click="handleUserSettings"
+        class="text-5xl hover:text-white transition-all duration-200"
+        :class="isUserSettingsOpen ? 'text-white' : 'text-gray-400'"
+      >
+        <Icon name="mdi-light:account" />
+      </button>
+      <Transition
+        enter-active-class="transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <UserSettings
+          v-if="isUserSettingsOpen"
+          :handle-logout="handleLogout"
+          :handle-login-submit="handleLoginSubmit"
+          :currentUser="user"
+          :show-user-settings="showUserSettings"
+          class="absolute top-0 left-full ml-4 w-48"
+        />
+      </Transition>
+    </div>
+  </div>
 </template>

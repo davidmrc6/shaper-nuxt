@@ -1,7 +1,7 @@
 import { URL, fileURLToPath } from "url";
 
 export default defineNuxtConfig({
-  modules: ["@nuxtjs/google-fonts", "@pinia/nuxt"],
+  modules: ["@nuxtjs/google-fonts", "@pinia/nuxt", "@nuxt/icon"],
   googleFonts: {
     families: {
       Parkinsans: [300, 700],
