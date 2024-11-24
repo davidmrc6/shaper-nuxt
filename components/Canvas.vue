@@ -8,6 +8,12 @@ const props = defineProps({
     required: true
   }
 })
+
+const emit = defineEmits(['deleteShape'])
+
+const handleDeleteShape = (shapeId) => {
+  emit('deleteShape', shapeId)
+}
 </script>
 
 <template>
@@ -22,8 +28,10 @@ const props = defineProps({
     <DraggableShape
         v-for="shape in shapes"
         :key="shape.id"
+        :id="shape.id"
         :initial-x="shape.x"
         :initial-y="shape.y"
+        @delete="handleDeleteShape"
       />
    </div>
 </div>

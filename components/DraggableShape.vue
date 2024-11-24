@@ -7,8 +7,14 @@ const props = defineProps({
   initialY: {
     type: Number,
     default: 0
+  },
+  id: {
+    type: Number,
+    required: true
   }
 })
+
+const emit = defineEmits(['delete'])
 
 const draggableRef = ref(null)
 const isDragging = ref(false)
@@ -137,6 +143,12 @@ const updateSize = (newSize) => {
   showMenu.value = false
 }
 
+// Delete shape
+const deleteShape = () => {
+  emit('delete', props.id)
+  showMenu.value = false
+}
+
 // Close menu when clicking outside
 const closeMenu = (event) => {
   if (!event.target.closest('.context-menu') && !event.target.closest('.draggable-shape')) {
@@ -201,7 +213,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div>
+    <div class="mb-4">
       <p class="text-1xl font-bold font-parkinsans text-gray-400 mb-2">size</p>
       <div class="grid grid-cols-2 gap-2">
         <button
@@ -209,13 +221,22 @@ onMounted(() => {
           :key="size"
           :class="[
             'font-parkinsans text-1xl text-gray-400 hover:text-white transition-all duration-200',
-            shapeStyle.size === size ? 'text-white font-bold  ' : ''
+            shapeStyle.size === size ? 'text-white font-bold' : ''
           ]"
           @click="updateSize(size)"
         >
           {{ size }}px
         </button>
       </div>
+    </div>
+
+    <div>
+      <button
+        @click="deleteShape"
+        class="w-full text-left text-1xl font-parkinsans text-red-500 hover:text-red-400 transition-all duration-200"
+      >
+        delete shape
+      </button>
     </div>
   </div>
 </template>

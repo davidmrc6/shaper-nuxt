@@ -41,6 +41,11 @@ const addShape = () => {
   })
 }
 
+// Delete a shape
+const deleteShape = (shapeId) => {
+  shapes.value = shapes.value.filter(shape => shape.id !== shapeId)
+}
+
 // Fetch profile data
 const fetchProfile = async () => {
   try {
@@ -102,6 +107,7 @@ onMounted(async () => {
       <Canvas
         :profile="profileData"
         :shapes="shapes"
+        @delete-shape="deleteShape"
       />
 
     </div>
@@ -113,6 +119,7 @@ onMounted(async () => {
       >
         <Icon name="mdi-light:plus-circle" />
       </button>
+
       <button
         @click="handleUserSettings"
         class="text-5xl hover:text-white transition-all duration-200"
@@ -120,6 +127,7 @@ onMounted(async () => {
       >
         <Icon name="mdi-light:account" />
       </button>
+
       <Transition
         enter-active-class="transition-all duration-300 ease-out"
         enter-from-class="opacity-0 -translate-y-2"
