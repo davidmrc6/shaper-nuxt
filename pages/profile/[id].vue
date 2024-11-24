@@ -7,10 +7,11 @@ const router = useRouter()
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)
 
+const shapes = ref([])
+
 definePageMeta({
   layout: 'default'
 })
-
 
 const profileData = ref({
   username: '',
@@ -31,6 +32,15 @@ const showUserSettings = computed(() => {
   return isAuthenticated.value
 })
 
+// Add a new shape
+const addShape = () => {
+  shapes.value.push({
+    id: Date.now(), // For now, timestamp is used as id
+    x: 0,
+    y: 0
+  })
+}
+
 // Fetch profile data
 const fetchProfile = async () => {
   try {
@@ -43,23 +53,6 @@ const fetchProfile = async () => {
     }
   } catch (error) {
     error.value = 'Failed to load profile'
-  }
-}
-
-// Update profile
-const updateProfile = async () => {
-  try {
-    const response = await $fetch(`/api/profile/${route.params.id}`, {
-      method: 'PUT',
-      body: profileData.value
-    })
-
-    if (response.status === 200) {
-      isEditing.value = false
-      error.value = null
-    }
-  } catch (err) {
-    error.value = 'Failed to update profile' + err.message
   }
 }
 
@@ -108,11 +101,14 @@ onMounted(async () => {
       <!-- Content -->
       <Canvas
         :profile="profileData"
+        :shapes="shapes"
       />
 
     </div>
     <div class="absolute top-1/2 -translate-y-1/2 flex flex-col gap-4 ml-6">
       <button
+      v-if="isOwner"
+      @click="addShape"
         class="text-5xl text-gray-400 hover:text-white transition-all duration-200"
       >
         <Icon name="mdi-light:plus-circle" />
