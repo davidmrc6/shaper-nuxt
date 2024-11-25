@@ -3,11 +3,11 @@ export const useAuthStore = defineStore('auth', {
     user: null,
     error: null,
     loading: false,
-    initialized: false
+    initialized: false,
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.user && state.initialized
+    isAuthenticated: state => !!state.user && state.initialized,
   },
 
   actions: {
@@ -31,7 +31,8 @@ export const useAuthStore = defineStore('auth', {
         }
         this.user = null
         return false
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Auth check error:', error)
         this.user = null
         return false
@@ -45,24 +46,27 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await $fetch('/api/auth/register', {
           method: 'POST',
-          body: credentials
+          body: credentials,
         })
 
         if (response.status === 201) {
           await this.login({
             username: credentials.username,
-            password: credentials.password
+            password: credentials.password,
           })
           return true
-        } else {
+        }
+        else {
           this.error = response.body.message
           return false
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Registration error:', error)
         this.error = error.data?.body?.message || 'Registration failed'
         return false
-      } finally {
+      }
+      finally {
         this.loading = false
       }
     },
@@ -79,22 +83,24 @@ export const useAuthStore = defineStore('auth', {
 
         const response = await $fetch('/api/auth/login', {
           method: 'POST',
-          body: credentials
+          body: credentials,
         })
 
         if (response.status === 200) {
           this.user = response.body.user
           this.initialized = true
           return true
-        } else {
+        }
+        else {
           this.error = response.body.message
           return false
         }
-
-      } catch (error) {
+      }
+      catch (error) {
         this.error = error.data?.body?.message || 'Login failed'
         return false
-      } finally {
+      }
+      finally {
         this.loading = false
       }
     },
@@ -108,10 +114,11 @@ export const useAuthStore = defineStore('auth', {
           return true
         }
         return false
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Logout error:', error)
         return false
       }
-    }
-  }
+    },
+  },
 })

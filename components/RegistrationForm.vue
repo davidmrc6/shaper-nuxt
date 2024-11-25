@@ -2,22 +2,22 @@
 const props = defineProps({
   onSubmit: {
     type: Function,
-    required: true
+    required: true,
   },
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   error: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const form = ref({
   email: '',
   username: '',
-  password: ''
+  password: '',
 })
 
 const handleSubmit = () => {
@@ -28,7 +28,10 @@ const handleSubmit = () => {
 <template>
   <div>
     <div class="text-2xl flex py-6 flex-col font-parkinsans w-6/12 mx-auto">
-      <div v-if="error" class="flex flex-col text-red-500 text-base mb-4 text-center">
+      <div
+        v-if="error"
+        class="flex flex-col text-red-500 text-base mb-4 text-center"
+      >
         {{ error.toLowerCase() }}
       </div>
 
@@ -39,7 +42,7 @@ const handleSubmit = () => {
         placeholder="email"
         name="email"
         required
-      />
+      >
       <input
         v-model="form.username"
         type="text"
@@ -47,7 +50,7 @@ const handleSubmit = () => {
         placeholder="username"
         name="uname"
         required
-      />
+      >
       <input
         v-model="form.password"
         type="password"
@@ -55,12 +58,12 @@ const handleSubmit = () => {
         placeholder="password"
         name="psw"
         required
-      />
+      >
 
       <button
-        @click.prevent="handleSubmit"
         class="bg-transparent block h-max w-max border-none mx-auto py-3"
         :disabled="loading"
+        @click.prevent="handleSubmit"
       >
         <span class="text-gray-400 hover:text-white font-bold transition-all duration-200">
           {{ loading ? 'signing up...' : 'sign up' }}

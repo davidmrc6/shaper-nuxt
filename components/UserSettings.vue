@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+defineProps({
   handleLogout: Function,
   handleLoginSubmit: Function,
   handleProfileSubmit: Function,
@@ -15,22 +15,22 @@ const props = defineProps({
         {{ currentUser?.username }}
       </h1>
       <button
-        @click="handleProfileSubmit"
         class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
+        @click="handleProfileSubmit"
       >
         profile
       </button>
       <button
-        @click="handleLogout"
         class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
+        @click="handleLogout"
       >
         logout
       </button>
     </div>
     <div v-else>
       <button
-        @click="handleLoginSubmit"
         class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
+        @click="handleLoginSubmit"
       >
         log in
       </button>

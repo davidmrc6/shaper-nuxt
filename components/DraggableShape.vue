@@ -2,23 +2,23 @@
 const props = defineProps({
   initialX: {
     type: Number,
-    default: 0
+    default: 0,
   },
   initialY: {
     type: Number,
-    default: 0
+    default: 0,
   },
   id: {
     type: Number,
-    required: true
+    required: true,
   },
   userId: Number,
   initialColor: String,
   initialSize: Number,
   isOwner: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits(['delete', 'update'])
@@ -28,26 +28,26 @@ const isDragging = ref(false)
 const showMenu = ref(false)
 const menuPosition = reactive({ x: 0, y: 0 })
 
-const menuWidth = 208;
+const menuWidth = 208
 
 const shapeStyle = reactive({
   size: props.initialSize || 48,
-  color: props.initialColor || 'bg-blue-500'
+  color: props.initialColor || 'bg-blue-500',
 })
 
 const position = reactive({
   x: props.initialX || 0,
-  y: props.initialY || 0
+  y: props.initialY || 0,
 })
 
 const offset = reactive({
   x: props.initialX || 0,
-  y: props.initialY || 0
+  y: props.initialY || 0,
 })
 
 const initial = reactive({
   x: props.initialX,
-  y: props.initialY
+  y: props.initialY,
 })
 
 const colors = [
@@ -68,10 +68,11 @@ const savePosition = async () => {
         x: position.x,
         y: position.y,
         color: shapeStyle.color,
-        size: shapeStyle.size
-      }
+        size: shapeStyle.size,
+      },
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to save shape position:', error)
   }
 }
@@ -91,7 +92,8 @@ const startDragging = (event) => {
   if (event.type === 'mousedown') {
     window.addEventListener('mousemove', drag)
     window.addEventListener('mouseup', stopDragging)
-  } else {
+  }
+  else {
     window.addEventListener('touchmove', drag, { passive: false })
     window.addEventListener('touchend', stopDragging)
   }
@@ -208,19 +210,19 @@ onMounted(() => {
 <template>
   <div
     ref="draggableRef"
-    @mousedown="startDragging"
-    @touchstart="startDragging"
-    @contextmenu="handleContextMenu"
     :style="{
       transform: `translate(${position.x}px, ${position.y}px)`,
       width: `${shapeStyle.size}px`,
-      height: `${shapeStyle.size}px`
+      height: `${shapeStyle.size}px`,
     }"
     :class="[
       shapeStyle.color,
       'absolute rounded-full select-none',
-      { 'cursor-move touch-none': isOwner, 'cursor-default': !isOwner }
+      { 'cursor-move touch-none': isOwner, 'cursor-default': !isOwner },
     ]"
+    @mousedown="startDragging"
+    @touchstart="startDragging"
+    @contextmenu="handleContextMenu"
   />
 
   <!-- Context menu -->
@@ -229,11 +231,13 @@ onMounted(() => {
     class="context-menu fixed bg-neutral-900 shadow-lg rounded-lg p-4 z-50 w-52"
     :style="{
       left: `${menuPosition.x}px`,
-      top: `${menuPosition.y}px`
+      top: `${menuPosition.y}px`,
     }"
   >
     <div class="mb-4">
-      <p class="text-1xl font-bold font-parkinsans text-gray-400 mb-2">color</p>
+      <p class="text-1xl font-bold font-parkinsans text-gray-400 mb-2">
+        color
+      </p>
       <div class="flex gap-2">
         <button
           v-for="color in colors"
@@ -241,7 +245,7 @@ onMounted(() => {
           :class="[
             color.value,
             'w-6 h-6 rounded-full hover:opacity-80 transition-opacity',
-            shapeStyle.color === color.value ? 'ring-2 ring-offset-2 ring-gray-400' : ''
+            shapeStyle.color === color.value ? 'ring-2 ring-offset-2 ring-gray-400' : '',
           ]"
           @click="changeColor(color.value)"
         />
@@ -249,14 +253,16 @@ onMounted(() => {
     </div>
 
     <div class="mb-4">
-      <p class="text-1xl font-bold font-parkinsans text-gray-400 mb-2">size</p>
+      <p class="text-1xl font-bold font-parkinsans text-gray-400 mb-2">
+        size
+      </p>
       <div class="grid grid-cols-2 gap-2">
         <button
           v-for="size in [24, 48, 72, 96]"
           :key="size"
           :class="[
             'font-parkinsans text-1xl text-gray-400 hover:text-white transition-all duration-200',
-            shapeStyle.size === size ? 'text-white font-bold' : ''
+            shapeStyle.size === size ? 'text-white font-bold' : '',
           ]"
           @click="updateSize(size)"
         >
@@ -267,8 +273,8 @@ onMounted(() => {
 
     <div>
       <button
-        @click="deleteShape"
         class="w-full text-left text-1xl font-parkinsans text-red-500 hover:text-red-400 transition-all duration-200"
+        @click="deleteShape"
       >
         delete shape
       </button>

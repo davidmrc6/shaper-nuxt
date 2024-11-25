@@ -1,5 +1,5 @@
-import pg from "pg"
-import * as dotenv from "dotenv"
+import pg from 'pg'
+import * as dotenv from 'dotenv'
 
 dotenv.config()
 const { Pool } = pg
@@ -7,19 +7,20 @@ const { Pool } = pg
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl:
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
       : false,
-});
+})
 
 const testConnection = async () => {
   try {
     const client = await pool.connect()
     await client.query('SELECT NOW()')
     client.release()
-    console.log("Database connected successfully!")
-  } catch (err) {
-    console.error("Database connection error:", err.stack)
+    console.log('Database connected successfully!')
+  }
+  catch (err) {
+    console.error('Database connection error:', err.stack)
     throw err
   }
 }
@@ -61,12 +62,14 @@ const initializeTables = async () => {
     await client.query(createTableQuery)
     await client.query(createShapesTable)
     await client.query('COMMIT')
-    console.log("Database tables initialized successfully!")
-  } catch (error) {
+    console.log('Database tables initialized successfully!')
+  }
+  catch (error) {
     await client.query('ROLLBACK')
-    console.error("Error initializing database tables:", error.stack)
+    console.error('Error initializing database tables:', error.stack)
     throw error
-  } finally {
+  }
+  finally {
     client.release()
   }
 }

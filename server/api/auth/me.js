@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if (!token) {
       return {
         status: 401,
-        body: { message: 'Not authenticated' }
+        body: { message: 'Not authenticated' },
       }
     }
 
@@ -16,25 +16,26 @@ export default defineEventHandler(async (event) => {
     // Get user data
     const result = await query(
       'SELECT id, email, username FROM users WHERE id = $1',
-      [decoded.userId]
+      [decoded.userId],
     )
 
     if (!result.rows[0]) {
       return {
         status: 401,
-        body: { message: 'User not found' }
+        body: { message: 'User not found' },
       }
     }
 
     return {
       status: 200,
-      body: { user: result.rows[0] }
+      body: { user: result.rows[0] },
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Auth check error', error)
     return {
       status: 401,
-      body: { message: 'Authentication failed' }
+      body: { message: 'Authentication failed' },
     }
   }
 })

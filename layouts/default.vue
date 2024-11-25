@@ -1,7 +1,7 @@
 <script setup>
 const slideTransition = {
   name: 'page',
-  mode: 'out-in'
+  mode: 'out-in',
 }
 </script>
 

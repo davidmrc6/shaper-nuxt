@@ -1,24 +1,23 @@
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useAuthStore } from "~/stores/auth";
+import { useAuthStore } from '~/stores/auth'
 
-import LoginForm from "~/components/LoginForm.vue";
+import LoginForm from '~/components/LoginForm.vue'
 
 definePageMeta({
   middleware: ['clear-errors'],
-  layout: 'default'
+  layout: 'default',
 })
 
-const router = useRouter()
 const authStore = useAuthStore()
 const { error, loading } = storeToRefs(authStore)
 
 const handleLogin = async (credentials) => {
   const success = await authStore.login(credentials)
   if (success) {
-    router.push(`/profile/${authStore.user.id}`)
+    await navigateTo(`/profile/${authStore.user.id}`)
   }
-};
+}
 </script>
 
 <template>

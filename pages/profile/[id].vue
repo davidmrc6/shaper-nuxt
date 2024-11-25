@@ -10,16 +10,14 @@ const { user, isAuthenticated } = storeToRefs(authStore)
 const shapes = ref([])
 
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
 const profileData = ref({
   username: '',
   bio: '',
-  displayName: ''
+  displayName: '',
 })
-const isEditing = ref(false)
-const error = ref(null)
 const isUserSettingsOpen = ref(false)
 
 // Check if current user is profile owner
@@ -41,11 +39,12 @@ const addShape = async () => {
         x: 0,
         y: 0,
         color: 'bg-blue-500',
-        size: 48
-      }
+        size: 48,
+      },
     })
     shapes.value.push(response.shape)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to add shape:', error)
   }
 }
@@ -55,10 +54,11 @@ const deleteShape = async (shapeId) => {
   try {
     await $fetch(`/api/shapes/${route.params.id}`, {
       method: 'DELETE',
-      body: { shapeId }
+      body: { shapeId },
     })
     shapes.value = shapes.value.filter(shape => shape.id !== shapeId)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to delete shape:', error)
   }
 }
@@ -73,7 +73,8 @@ const fetchProfile = async () => {
     if (response.status === 404) {
       router.push(`/profile/${user.value.id}`)
     }
-  } catch (error) {
+  }
+  catch (error) {
     error.value = 'Failed to load profile'
   }
 }
@@ -83,7 +84,8 @@ const fetchShapes = async () => {
   try {
     const response = await $fetch(`/api/shapes/${route.params.id}`)
     shapes.value = response.shapes
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to fetch shapes:', error)
   }
 }
@@ -119,7 +121,6 @@ onMounted(async () => {
 <template>
   <div class="flex min-h-screen bg-neutral-900 relative">
     <div class="relative flex mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 font-parkinsans">
-
       <!-- Left gradient -->
       <div class="absolute left-0 top-0 w-0.5 h-full">
         <div class="absolute inset-0 bg-gray-500" />
@@ -132,27 +133,26 @@ onMounted(async () => {
       </div>
 
       <!-- Content -->
-      <Canvas
+      <ShapeCanvas
         :profile="profileData"
         :shapes="shapes"
         :is-owner="isOwner"
         @delete-shape="deleteShape"
       />
-
     </div>
     <div class="absolute top-1/2 -translate-y-1/2 flex flex-col gap-4 ml-6">
       <button
-      v-if="isOwner"
-      @click="addShape"
+        v-if="isOwner"
         class="text-5xl text-gray-400 hover:text-white transition-all duration-200"
+        @click="addShape"
       >
         <Icon name="mdi-light:plus-circle" />
       </button>
 
       <button
-        @click="handleUserSettings"
         class="text-5xl hover:text-white transition-all duration-200"
         :class="isUserSettingsOpen ? 'text-white' : 'text-gray-400'"
+        @click="handleUserSettings"
       >
         <Icon name="mdi-light:account" />
       </button>
@@ -170,7 +170,7 @@ onMounted(async () => {
           :handle-logout="handleLogout"
           :handle-login-submit="handleLoginSubmit"
           :handle-profile-submit="handleProfileSubmit"
-          :currentUser="user"
+          :current-user="user"
           :show-user-settings="showUserSettings"
           class="absolute top-0 left-full ml-4 w-48"
         />

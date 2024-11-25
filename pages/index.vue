@@ -3,10 +3,9 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
 })
 
-const router = useRouter()
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)
 
@@ -17,13 +16,14 @@ onMounted(async () => {
 
   console.log('Auth state:', {
     user: user.value,
-    isAuthenticated: isAuthenticated.value
+    isAuthenticated: isAuthenticated.value,
   })
 
   // Now we can safely check auth state and navigate
   if (!isAuthenticated.value) {
     await navigateTo('/login')
-  } else if (user.value?.id) {
+  }
+  else if (user.value?.id) {
     await navigateTo(`/profile/${user.value.id}`)
   }
 })

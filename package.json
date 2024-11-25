@@ -8,10 +8,12 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@iconify/vue": "^4.2.0-dev.2",
+    "@nuxt/eslint": "^0.7.1",
     "@nuxt/icon": "^1.8.2",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.7.0",

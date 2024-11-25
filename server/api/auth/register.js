@@ -1,5 +1,5 @@
-import { query } from "~/server/db/database";
 import bcrypt from 'bcrypt'
+import { query } from '~/server/db/database'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     if (!email || !username || !password) {
       return {
         status: 400,
-        body: { message: 'All fields are required' }
+        body: { message: 'All fields are required' },
       }
     }
 
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     if (!emailRegex.test(email)) {
       return {
         status: 400,
-        body: { message: 'Invalid email format' }
+        body: { message: 'Invalid email format' },
       }
     }
 
@@ -29,33 +29,34 @@ export default defineEventHandler(async (event) => {
     // Check if email exists in db
     const existingUser = await query(
       'SELECT id FROM users WHERE email = $1',
-      [email]
+      [email],
     )
     if (existingUser.rows.length > 0) {
       return {
         status: 409,
-        body: { message: 'Email already registered' }
+        body: { message: 'Email already registered' },
       }
     }
 
     // Insert new user
     const result = await query(
       'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING id, email, username',
-      [email, username, hashedPassword]
+      [email, username, hashedPassword],
     )
 
     return {
       status: 201,
       body: {
         message: 'Registration succesful',
-        user: result.rows[0]
-      }
+        user: result.rows[0],
+      },
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Registration error:', error)
     return {
       status: 500,
-      body: { message: 'Internal server error' }
+      body: { message: 'Internal server error' },
     }
   }
 })

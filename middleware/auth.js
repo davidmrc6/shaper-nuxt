@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   const authStore = useAuthStore()
 
   // Wait for auth check to complete
@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   console.log('Auth state:', {
     user: authStore.user,
     isAuthenticated: authStore.isAuthenticated,
-    to: to.path
+    to: to.path,
   })
 
   // If not authenticated, redirect to login
