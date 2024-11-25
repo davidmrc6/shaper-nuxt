@@ -31,6 +31,7 @@ Alternatively, you can change the username, password, and name of database accor
 ```.env
 DATABASE_URL=postgresql://<username>:<password>@localhost:5432/<db_name>
 ```
+For a more in-depth guide to properly setting up the database, refer to [this guide](server/db/DBSETUP.md).
 #### Create JWT token
 You can create a JWT token and include it in your `.env` file by running the command
 ```bash
@@ -55,7 +56,7 @@ npm run dev
 The web application still has some issues which would need to be solved for it to be a complete product.
 
 #### Code Layout
-Being the first time I have worked with Nuxt, the code might be inconsistent or not following standard practices at some points. Admittedly, despite the application being functional, there are a few "band-aid solutions" to some problems I came across, which I will fix at some point. Also, the documentation could be improved.
+Being the first time I have worked with Nuxt, the code might be inconsistent or not following standard practices at some points (there might also be some redundant code at places). Admittedly, despite the application being functional, there are a few "band-aid solutions" to some problems I came across, which I will fix at some point. Also, the documentation could be improved.
 
 #### Website Layout
 The current website layout isn't perfect - the 'profile' and 'add-shape' buttons are in an awkward position (and they don't translate well when using a mobile resolution, as their positioning is absolute.)
