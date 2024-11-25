@@ -1,10 +1,13 @@
 import { query } from '~/server/db/database'
 
+/**
+ * Defines methods for fetching and updating shapes.
+ */
 export default defineEventHandler(async (event) => {
   const method = event.method
   const userId = event.context.params?.id
 
-  // Fetch shapes for user
+  // Fetch shapes for user.
   if (method === 'GET') {
     try {
       const result = await query(
@@ -22,7 +25,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Create new shape
+  // Create new shape.
   if (method === 'POST') {
     const body = await readBody(event)
     try {
@@ -41,7 +44,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Update shape
+  // Update shape.
   if (method === 'PUT') {
     const body = await readBody(event)
     try {
@@ -60,7 +63,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Delete shape
+  // Delete shape.
   if (method === 'DELETE') {
     const body = await readBody(event)
     try {

@@ -1,3 +1,7 @@
+/**
+ * Initializes the database connection pool and configures SSL based on the environment.
+ */
+
 import pg from 'pg'
 import * as dotenv from 'dotenv'
 
@@ -12,6 +16,12 @@ const pool = new Pool({
       : false,
 })
 
+/**
+ * Tests the database connection by executing a simple query.
+ * Logs a success message if the connection is successful, otherwise logs an error.
+ *
+ * @throws Will throw an error if the database connection fails.
+ */
 const testConnection = async () => {
   try {
     const client = await pool.connect()
@@ -25,7 +35,12 @@ const testConnection = async () => {
   }
 }
 
-// Init tables
+/**
+ * Initializes the database tables if they do not already exist.
+ * Creates 'users' and 'shapes' tables.
+ *
+ * @throws Will throw an error if there is an issue initializing the tables.
+ */
 const initializeTables = async () => {
   const client = await pool.connect()
   try {
@@ -74,11 +89,23 @@ const initializeTables = async () => {
   }
 }
 
+/**
+ * Ensures the database is connected and tables are initialized.
+ *
+ * @throws Will throw an error if the database connection or table initialization fails.
+ */
 export const ensureDatabase = async () => {
   await testConnection()
   await initializeTables()
 }
 
+/**
+ * Executes a query on the database.
+ *
+ * @param {string} text - The SQL query text.
+ * @param {Array} [params] - The parameters for the SQL query.
+ * @returns {Promise<pg.QueryResult>} The result of the query.
+ */
 const query = (text, params) => pool.query(text, params)
 
 export { pool, query }

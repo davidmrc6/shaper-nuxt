@@ -1,12 +1,16 @@
 import bcrypt from 'bcrypt'
 import { query } from '~/server/db/database'
 
+/**
+ * Defines the registration event handler.
+ * @param event - An event object containing the request body.
+ */
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     const { email, username, password } = body
 
-    // Validate inputs
+    // Validate inputs.
     if (!email || !username || !password) {
       return {
         status: 400,
@@ -14,7 +18,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Validate email format
+    // Validate email format using a regular expression.
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return {
@@ -23,10 +27,11 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Hash password
+    // Hash password with `bcrypt`.
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Check if email exists in db
+    // Check if email exists in database.
+    // If it does, throw an error message.
     const existingUser = await query(
       'SELECT id FROM users WHERE email = $1',
       [email],
@@ -38,12 +43,13 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Insert new user
+    // Insert new user into database.
     const result = await query(
       'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING id, email, username',
       [email, username, hashedPassword],
     )
 
+    // On succesfull authentication, return success message and new user data,
     return {
       status: 201,
       body: {

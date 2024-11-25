@@ -1,11 +1,17 @@
 import jwt from 'jsonwebtoken'
 import { query } from '~/server/db/database'
 
+/**
+ * Defines methods for fetching and updating user profiles.
+ */
 export default defineEventHandler(async (event) => {
   const id = event.context.params.id
   const method = event.method
 
-  // GET profile
+  // GET profile.
+  // Get the user profile by ID.
+  // NOTE: This method also extracts user bio and display_name, even though
+  // they are currently not used in the application itself.
   if (method === 'GET') {
     try {
       const result = await query(
@@ -34,7 +40,10 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // PUT (update) profile
+  // PUT (update) profile.
+  // Updates user profile. Requires user to be authenticated.
+  // NOTE: This method was created to test the PUT method in the API, and is
+  // currently not used in the web application.
   if (method === 'PUT') {
     try {
       // Verify user is authorized

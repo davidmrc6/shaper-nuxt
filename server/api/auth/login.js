@@ -2,12 +2,16 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { query } from '~/server/db/database'
 
+/**
+ * Defines the login event handler.
+ * @param event - An event object containing the request body.
+ */
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     const { username, password } = body
 
-    // Validate inputs
+    // Validate inputs.
     if (!username || !password) {
       return {
         status: 400,
@@ -15,13 +19,15 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Get user from database
+    // Get user from database.
     const result = await query(
       'SELECT * FROM users WHERE username = $1 OR email = $1',
       [username],
     )
 
     const user = result.rows[0]
+
+    // If user not found, return error.
     if (!user) {
       return {
         status: 401,
@@ -29,7 +35,8 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Verify password
+    // Verify password.
+    // Here, we use the `compare` method for comparison, as the password is hashed.
     const validPassword = await bcrypt.compare(password, user.password)
     if (!validPassword) {
       return {
@@ -38,14 +45,14 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Generate JWT token
+    // Generate JWT token.
     const token = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET || 'default-secret',
       { expiresIn: '24h' },
     )
 
-    // Set HTTP-only cookie with token
+    // Set HTTP-only cookie with token.
     setCookie(event, 'auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -53,6 +60,7 @@ export default defineEventHandler(async (event) => {
       path: '/',
     })
 
+    // On successful login, return user data.
     return {
       status: 200,
       body: {
