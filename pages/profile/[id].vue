@@ -33,17 +33,34 @@ const showUserSettings = computed(() => {
 })
 
 // Add a new shape
-const addShape = () => {
-  shapes.value.push({
-    id: Date.now(), // For now, timestamp is used as id
-    x: 0,
-    y: 0
-  })
+const addShape = async () => {
+  try {
+    const response = await $fetch(`/api/shapes/${route.params.id}`, {
+      method: 'POST',
+      body: {
+        x: 0,
+        y: 0,
+        color: 'bg-blue-500',
+        size: 48
+      }
+    })
+    shapes.value.push(response.shape)
+  } catch (error) {
+    console.error('Failed to add shape:', error)
+  }
 }
 
 // Delete a shape
-const deleteShape = (shapeId) => {
-  shapes.value = shapes.value.filter(shape => shape.id !== shapeId)
+const deleteShape = async (shapeId) => {
+  try {
+    await $fetch(`/api/shapes/${route.params.id}`, {
+      method: 'DELETE',
+      body: { shapeId }
+    })
+    shapes.value = shapes.value.filter(shape => shape.id !== shapeId)
+  } catch (error) {
+    console.error('Failed to delete shape:', error)
+  }
 }
 
 // Fetch profile data
@@ -58,6 +75,16 @@ const fetchProfile = async () => {
     }
   } catch (error) {
     error.value = 'Failed to load profile'
+  }
+}
+
+// Fetch profile shapes
+const fetchShapes = async () => {
+  try {
+    const response = await $fetch(`/api/shapes/${route.params.id}`)
+    shapes.value = response.shapes
+  } catch (error) {
+    console.error('Failed to fetch shapes:', error)
   }
 }
 
@@ -84,7 +111,8 @@ const handleProfileSubmit = () => {
 // Initialize auth on page load
 onMounted(async () => {
   await authStore.initialize()
-  fetchProfile()
+  await fetchProfile()
+  await fetchShapes()
 })
 </script>
 
@@ -107,6 +135,7 @@ onMounted(async () => {
       <Canvas
         :profile="profileData"
         :shapes="shapes"
+        :is-owner="isOwner"
         @delete-shape="deleteShape"
       />
 

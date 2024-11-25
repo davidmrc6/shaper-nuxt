@@ -11,10 +11,17 @@ const props = defineProps({
   id: {
     type: Number,
     required: true
+  },
+  userId: Number,
+  initialColor: String,
+  initialSize: Number,
+  isOwner: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'update'])
 
 const draggableRef = ref(null)
 const isDragging = ref(false)
@@ -24,21 +31,23 @@ const menuPosition = reactive({ x: 0, y: 0 })
 const menuWidth = 208;
 
 const shapeStyle = reactive({
-  size: 48,
-  color: 'bg-blue-500'
+  size: props.initialSize || 48,
+  color: props.initialColor || 'bg-blue-500'
 })
 
 const position = reactive({
-  x: 0,
-  y: 0
+  x: props.initialX || 0,
+  y: props.initialY || 0
 })
+
 const offset = reactive({
-  x: 0,
-  y: 0
+  x: props.initialX || 0,
+  y: props.initialY || 0
 })
+
 const initial = reactive({
-  x: ref(props.initialX),
-  y: ref(props.initialY)
+  x: props.initialX,
+  y: props.initialY
 })
 
 const colors = [
@@ -49,8 +58,28 @@ const colors = [
   { label: 'Yellow', value: 'bg-yellow-500' },
 ]
 
+// Save position
+const savePosition = async () => {
+  try {
+    await $fetch(`/api/shapes/${props.userId}`, {
+      method: 'PUT',
+      body: {
+        shapeId: props.id,
+        x: position.x,
+        y: position.y,
+        color: shapeStyle.color,
+        size: shapeStyle.size
+      }
+    })
+  } catch (error) {
+    console.error('Failed to save shape position:', error)
+  }
+}
+
 // Start dragging shape
 const startDragging = (event) => {
+  if (!props.isOwner) return
+
   isDragging.value = true
 
   const eventX = event.type === 'mousedown' ? event.clientX : event.touches[0].clientX
@@ -101,10 +130,13 @@ const stopDragging = () => {
   window.removeEventListener('mouseup', stopDragging)
   window.removeEventListener('touchmove', drag)
   window.removeEventListener('touchend', stopDragging)
+  savePosition()
 }
 
 // Handle context menu
 const handleContextMenu = (event) => {
+  if (!props.isOwner) return
+
   event.preventDefault()
   showMenu.value = true
 
@@ -132,15 +164,17 @@ const handleContextMenu = (event) => {
 }
 
 // Change shape color
-const changeColor = (newColor) => {
+const changeColor = async (newColor) => {
   shapeStyle.color = newColor
   showMenu.value = false
+  await savePosition()
 }
 
 // Update size
-const updateSize = (newSize) => {
+const updateSize = async (newSize) => {
   shapeStyle.size = newSize
   showMenu.value = false
+  await savePosition()
 }
 
 // Delete shape
@@ -184,13 +218,14 @@ onMounted(() => {
     }"
     :class="[
       shapeStyle.color,
-      'absolute rounded-full cursor-move touch-none select-none draggable-shape'
+      'absolute rounded-full select-none',
+      { 'cursor-move touch-none': isOwner, 'cursor-default': !isOwner }
     ]"
   />
 
   <!-- Context menu -->
   <div
-    v-if="showMenu"
+    v-if="showMenu && isOwner"
     class="context-menu fixed bg-neutral-900 shadow-lg rounded-lg p-4 z-50 w-52"
     :style="{
       left: `${menuPosition.x}px`,

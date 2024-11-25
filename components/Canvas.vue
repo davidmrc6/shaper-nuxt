@@ -6,7 +6,11 @@ const props = defineProps({
   shapes: {
     type: Array,
     required: true
-  }
+  },
+  isOwner: {
+    type: Boolean,
+    default: false
+  },
 })
 
 const emit = defineEmits(['deleteShape'])
@@ -29,10 +33,14 @@ const handleDeleteShape = (shapeId) => {
         v-for="shape in shapes"
         :key="shape.id"
         :id="shape.id"
+        :user-id="profile.id"
         :initial-x="shape.x"
         :initial-y="shape.y"
+        :initial-color="shape.color"
+        :initial-size="shape.size"
+        :is-owner="isOwner"
         @delete="handleDeleteShape"
       />
    </div>
-</div>
+  </div>
 </template>
