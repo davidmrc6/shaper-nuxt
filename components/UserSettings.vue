@@ -1,9 +1,28 @@
 <script setup>
+/**
+ * Defines the user settings that get mounted when the user clicks on
+ * the profile icon.
+ */
 defineProps({
+  /**
+   * Handles user logout.
+   */
   handleLogout: Function,
+  /**
+   * Handles user login.
+   */
   handleLoginSubmit: Function,
+  /**
+   * Handles user clicking on the `profile` option.
+   */
   handleProfileSubmit: Function,
+  /**
+   * Display name of current user.
+   */
   currentUser: Object,
+  /**
+   * Checks if user settings should be displayed.
+   */
   showUserSettings: Boolean,
 })
 </script>

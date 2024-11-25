@@ -1,26 +1,53 @@
 <script setup>
+/**
+ * Defines a shape which is draggable and changeable by the user.
+ */
 const props = defineProps({
+  /**
+   * Initial x-coordinate of the shape.
+   */
   initialX: {
     type: Number,
     default: 0,
   },
+  /**
+   * Initial y-coordinate of the shape.
+   */
   initialY: {
     type: Number,
     default: 0,
   },
+  /**
+   * Id of the shape.
+   */
   id: {
     type: Number,
     required: true,
   },
+  /**
+   * Id of the user adding (or modifying) the shape.
+   */
   userId: Number,
+  /**
+   * Initial color of the shape.
+   */
   initialColor: String,
+  /**
+   * Initial size of the shape.
+   */
   initialSize: Number,
+  /**
+   * Checks whether the user modifying the shape is authorized to do so.
+   */
   isOwner: {
     type: Boolean,
     default: false,
   },
 })
 
+/**
+ * Delete and update events.
+ */
 const emit = defineEmits(['delete', 'update'])
 
 const draggableRef = ref(null)
@@ -29,6 +56,8 @@ const showMenu = ref(false)
 const menuPosition = reactive({ x: 0, y: 0 })
 
 const menuWidth = 208
+
+const sizesArray = [12, 24, 48, 72, 96, 128]
 
 const shapeStyle = reactive({
   size: props.initialSize || 48,
@@ -58,7 +87,10 @@ const colors = [
   { label: 'Yellow', value: 'bg-yellow-500' },
 ]
 
-// Save position
+/**
+ * Saves current position of the shape.
+ * Then, updates the database.
+ */
 const savePosition = async () => {
   try {
     await $fetch(`/api/shapes/${props.userId}`, {
@@ -77,7 +109,10 @@ const savePosition = async () => {
   }
 }
 
-// Start dragging shape
+/**
+ * Start dragging the shape around the ShapeCanvas.
+ * @param event - Mouse event triggered by the user.
+ */
 const startDragging = (event) => {
   if (!props.isOwner) return
 
@@ -99,7 +134,10 @@ const startDragging = (event) => {
   }
 }
 
-// Drag function
+/**
+ * Update the position of the shape while dragging the shape around.
+ * @param event - Mouse event triggered by the user.
+ */
 const drag = (event) => {
   if (!isDragging.value) {
     return
@@ -125,7 +163,10 @@ const drag = (event) => {
   offset.y = newY
 }
 
-// Stop dragging
+/**
+ * Stop dragging the shape.
+ * After all event listeners are removed, the position gets saved to the database.
+ */
 const stopDragging = () => {
   isDragging.value = false
   window.removeEventListener('mousemove', drag)
@@ -135,7 +176,11 @@ const stopDragging = () => {
   savePosition()
 }
 
-// Handle context menu
+/**
+ * Handles context menu.
+ * @param event - Mouse event triggered by the user. In this case, it is used to prevent
+ * the default action when the user right clicks.
+ */
 const handleContextMenu = (event) => {
   if (!props.isOwner) return
 
@@ -161,38 +206,58 @@ const handleContextMenu = (event) => {
     y = viewportHeight - menuWidth
   }
 
+  // Update menu positions
   menuPosition.x = x
   menuPosition.y = y
 }
 
-// Change shape color
+/**
+ * Change the color of a shape.
+ * This option is available in the context menu.
+ * After changing color, save the modified shape to the database.
+ * @param newColor - Color to change the shape to.
+ */
 const changeColor = async (newColor) => {
   shapeStyle.color = newColor
   showMenu.value = false
   await savePosition()
 }
 
-// Update size
+/**
+ * Update the size of a shape.
+ * This option is available in the context menu.
+ * After changing color, save the modified shape to the database.
+ * @param newSize - Size to update the shape to.
+ */
 const updateSize = async (newSize) => {
   shapeStyle.size = newSize
   showMenu.value = false
   await savePosition()
 }
 
-// Delete shape
+/**
+ * Deletes a shape from the canvas.
+ * Emits the 'delete' event back to the parent component.
+ * Hides the context menu on deletion of the shape.
+ */
 const deleteShape = () => {
   emit('delete', props.id)
   showMenu.value = false
 }
 
-// Close menu when clicking outside
+/**
+ * Closes context menu when user clicks outside of it.
+ * @param event - Mouse event triggered by the user.
+ */
 const closeMenu = (event) => {
   if (!event.target.closest('.context-menu') && !event.target.closest('.draggable-shape')) {
     showMenu.value = false
   }
 }
 
-// Clean up event listeners
+/**
+ * Cleans up event listeners added to the window object when the component is unmounted.
+ */
 onUnmounted(() => {
   window.removeEventListener('mousemove', drag)
   window.removeEventListener('mouseup', stopDragging)
@@ -201,13 +266,18 @@ onUnmounted(() => {
   window.removeEventListener('click', closeMenu)
 })
 
-// Add click outside listener
+/**
+ * Add `click` event listener to the window object when the component is mounted.
+ */
 onMounted(() => {
   window.addEventListener('click', closeMenu)
 })
 </script>
 
 <template>
+  <!--
+    Div containing the shape to be dragged and modified.
+  -->
   <div
     ref="draggableRef"
     :style="{
@@ -258,7 +328,7 @@ onMounted(() => {
       </p>
       <div class="grid grid-cols-2 gap-2">
         <button
-          v-for="size in [24, 48, 72, 96]"
+          v-for="size in sizesArray"
           :key="size"
           :class="[
             'font-parkinsans text-1xl text-gray-400 hover:text-white transition-all duration-200',
@@ -270,7 +340,6 @@ onMounted(() => {
         </button>
       </div>
     </div>
-
     <div>
       <button
         class="w-full text-left text-1xl font-parkinsans text-red-500 hover:text-red-400 transition-all duration-200"

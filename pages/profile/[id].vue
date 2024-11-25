@@ -1,36 +1,47 @@
 <script setup>
+/**
+ * Defines a dynamic route for profile page of users.
+ */
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 
+/**
+ * Set default layout to page.
+ */
+definePageMeta({
+  layout: 'default',
+})
+
 const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
 const { user, isAuthenticated } = storeToRefs(authStore)
 
 const shapes = ref([])
 
-definePageMeta({
-  layout: 'default',
-})
-
 const profileData = ref({
   username: '',
-  bio: '',
-  displayName: '',
 })
 const isUserSettingsOpen = ref(false)
 
-// Check if current user is profile owner
+/**
+ * Checks if current user is profile owner.
+ */
 const isOwner = computed(() => {
   return user.value?.id === parseInt(route.params.id)
 })
 
-// Check if we can show user settings
+/**
+ * Check if we can show user settings
+ */
 const showUserSettings = computed(() => {
   return isAuthenticated.value
 })
 
-// Add a new shape
+/**
+ * Add a new shape.
+ * Whenever a new shape is added by the user, it gets sent to the database and gets
+ * appended to the `shapes` array.
+ */
 const addShape = async () => {
   try {
     const response = await $fetch(`/api/shapes/${route.params.id}`, {
@@ -49,7 +60,11 @@ const addShape = async () => {
   }
 }
 
-// Delete a shape
+/**
+ * Delets a shape.
+ * When the user deletes a shape, its entry gets deleted from the database.
+ * @param shapeId - The id of the shape to be deleted.
+ */
 const deleteShape = async (shapeId) => {
   try {
     await $fetch(`/api/shapes/${route.params.id}`, {
@@ -63,7 +78,9 @@ const deleteShape = async (shapeId) => {
   }
 }
 
-// Fetch profile data
+/**
+ * Fetch profile data.
+ */
 const fetchProfile = async () => {
   try {
     const response = await $fetch(`/api/profile/${route.params.id}`)
@@ -71,7 +88,7 @@ const fetchProfile = async () => {
       profileData.value = response.body.profile
     }
     if (response.status === 404) {
-      router.push(`/profile/${user.value.id}`)
+      await navigateTo(`/profile/${user.value.id}`)
     }
   }
   catch (error) {
@@ -79,7 +96,9 @@ const fetchProfile = async () => {
   }
 }
 
-// Fetch profile shapes
+/**
+ * Fetch profile shapes data.
+ */
 const fetchShapes = async () => {
   try {
     const response = await $fetch(`/api/shapes/${route.params.id}`)
@@ -90,27 +109,41 @@ const fetchShapes = async () => {
   }
 }
 
+/**
+ * Handle user settings menu.
+ */
 const handleUserSettings = () => {
   isUserSettingsOpen.value = !isUserSettingsOpen.value
 }
 
+/**
+ * Handle user logout.
+ */
 const handleLogout = async () => {
   const success = await authStore.logout()
   if (success) {
     isUserSettingsOpen.value = false
-    router.push('/login')
+    await navigateTo('/login')
   }
 }
 
+/**
+ * Route user to login screen when they click on the `login` option of the user settings menu.
+ */
 const handleLoginSubmit = () => {
-  router.push('/login')
+  navigateTo('/login')
 }
 
+/**
+ * Route user to profile screen when they click on the `profile` option of the user settings menu.
+ */
 const handleProfileSubmit = () => {
-  router.push(`/profile/${user.value.id}`)
+  navigateTo(`/profile/${user.value.id}`)
 }
 
-// Initialize auth on page load
+/**
+ * Initialize authentication and fetch data on page load.
+ */
 onMounted(async () => {
   await authStore.initialize()
   await fetchProfile()
@@ -120,19 +153,22 @@ onMounted(async () => {
 
 <template>
   <div class="flex min-h-screen bg-neutral-900 relative">
+    <!--
+      Apply gradient effect to give page canvas a modern look.
+    -->
     <div class="relative flex mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 font-parkinsans">
-      <!-- Left gradient -->
+      <!-- Left gradient. -->
       <div class="absolute left-0 top-0 w-0.5 h-full">
         <div class="absolute inset-0 bg-gray-500" />
         <div class="absolute inset-0 bg-gradient-to-b from-neutral-900 via-transparent via-50% to-neutral-900" />
       </div>
-      <!-- Right gradient -->
+      <!-- Right gradient. -->
       <div class="absolute right-0 top-0 w-0.5 h-full">
         <div class="absolute inset-0 bg-gray-500" />
         <div class="absolute inset-0 bg-gradient-to-b from-neutral-900 via-transparent via-50% to-neutral-900" />
       </div>
 
-      <!-- Content -->
+      <!-- Content. -->
       <ShapeCanvas
         :profile="profileData"
         :shapes="shapes"
@@ -141,6 +177,9 @@ onMounted(async () => {
       />
     </div>
     <div class="absolute top-1/2 -translate-y-1/2 flex flex-col gap-4 ml-6">
+      <!--
+        Button that lets user add shapes to the canvas, if authorized.
+      -->
       <button
         v-if="isOwner"
         class="text-5xl text-gray-400 hover:text-white transition-all duration-200"
@@ -148,7 +187,10 @@ onMounted(async () => {
       >
         <Icon name="mdi-light:plus-circle" />
       </button>
-
+      <!--
+        Button that lets user open his profile settings, if logged in. If not logged in,
+        the button opens a menu giving the user the option to log in.
+      -->
       <button
         class="text-5xl hover:text-white transition-all duration-200"
         :class="isUserSettingsOpen ? 'text-white' : 'text-gray-400'"
@@ -157,6 +199,7 @@ onMounted(async () => {
         <Icon name="mdi-light:account" />
       </button>
 
+      <!-- Transition effect when the user opens the user settings menu. -->
       <Transition
         enter-active-class="transition-all duration-300 ease-out"
         enter-from-class="opacity-0 -translate-y-2"
@@ -165,6 +208,7 @@ onMounted(async () => {
         leave-from-class="opacity-100 translate-y-0"
         leave-to-class="opacity-0 -translate-y-2"
       >
+        <!-- User settings menu. -->
         <UserSettings
           v-if="isUserSettingsOpen"
           :handle-logout="handleLogout"

@@ -1,9 +1,15 @@
 <script setup>
+/**
+ * Login page of the website.
+ */
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 
-import LoginForm from '~/components/LoginForm.vue'
-
+/**
+ * Set default layout to page, as well as necessary middleware.
+ * The 'clear-errors' middleware is added to clear any login/register
+ * errors when the page gets refreshed.
+ */
 definePageMeta({
   middleware: ['clear-errors'],
   layout: 'default',
@@ -12,6 +18,12 @@ definePageMeta({
 const authStore = useAuthStore()
 const { error, loading } = storeToRefs(authStore)
 
+/**
+ * Handles user login.
+ * The login logic is handled by the `login` method of the `useAuthStore` store.
+ * If the login is successful, the user gets redirected to his profile page.
+ * @param credentials - Username and password of user.
+ */
 const handleLogin = async (credentials) => {
   const success = await authStore.login(credentials)
   if (success) {
@@ -26,7 +38,7 @@ const handleLogin = async (credentials) => {
       <h1 class="text-5xl text-center text-white font-bold font-parkinsans">
         shaper
       </h1>
-
+      <!-- User login form -->
       <LoginForm
         :loading="loading"
         :error="error"

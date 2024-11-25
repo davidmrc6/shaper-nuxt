@@ -1,18 +1,37 @@
 <script setup>
+/**
+ * Defines the canvas onto which shapes are mounted and modified.
+ */
 defineProps({
+  /**
+   * Profile of the user currently viewing the canvas.
+   */
   profile: Object,
+  /**
+   * Array of shapes.
+   */
   shapes: {
     type: Array,
     required: true,
   },
+  /**
+   * Checks if user trying to modify the shapes is authorized to do so.
+   */
   isOwner: {
     type: Boolean,
     default: false,
   },
 })
 
+/**
+ * Delete shape event.
+ */
 const emit = defineEmits(['deleteShape'])
 
+/**
+ * Handles shape deletion
+ * @param shapeId - Id of the shape to be deleted.
+ */
 const handleDeleteShape = (shapeId) => {
   emit('deleteShape', shapeId)
 }

@@ -1,4 +1,12 @@
 <script setup>
+/**
+ * Defines default layout for web pages.
+ * Includes a navigation bar, a footer, and transitions between pages.
+ */
+
+/**
+ * Transition between pages.
+ */
 const slideTransition = {
   name: 'page',
   mode: 'out-in',
@@ -6,29 +14,28 @@ const slideTransition = {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-neutral-900 text-white font-parkinsans antialiased overflow-x-hidden">
+  <div class="flex flex-col min-h-screen bg-neutral-900 text-white font-parkinsans">
     <!-- Navigation container -->
-    <nav class="fixed top-0 left-0 right-0 w-full z-50">
-      <div class="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm border-b border-neutral-800 -z-10" />
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- Logo -->
-          <h1 class="text-2xl font-bold">
-            shaper
-          </h1>
+    <nav class="fixed top-0 left-0 right-0">
+      <div class="bg-neutral-900 border-b border-neutral-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <!-- Logo of web application -->
+            <h1 class="text-2xl font-bold">
+              shaper
+            </h1>
+          </div>
         </div>
       </div>
     </nav>
 
-    <!-- Main content with padding for fixed nav -->
+    <!-- Main content -->
     <main class="flex-grow pt-16">
-      <!-- Page transition wrapper -->
       <NuxtPage :transition="slideTransition" />
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-neutral-800 w-full bg-neutral-900">
+    <footer class="border-t border-neutral-800 bg-neutral-900">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <p class="text-center text-neutral-500">
           created by David Mereacre.
@@ -41,19 +48,19 @@ const slideTransition = {
 <style>
 .page-enter-active,
 .page-leave-active {
-  @apply transition-all duration-300 ease-out will-change-transform;
+  transition: all 300ms ease-out;
 }
 
-.page-enter-from {
-  @apply opacity-0 translate-y-2;
-}
-
+.page-enter-from,
 .page-leave-to {
-  @apply opacity-0 -translate-y-2;
+  opacity: 0;
+  transform: translateY(8px);
+  will-change: transform, opacity;
 }
 
-html,
-body {
-  @apply bg-neutral-900 min-h-screen overflow-x-hidden;
+/* Base styles */
+:root {
+  background-color: #171717;
+  min-height: 100vh;
 }
 </style>

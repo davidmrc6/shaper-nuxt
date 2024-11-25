@@ -1,13 +1,25 @@
 <script setup>
+/**
+ * Defines the register form component.
+ */
 const props = defineProps({
+  /**
+   * Function defining the action when the register form is submitted.
+   */
   onSubmit: {
     type: Function,
     required: true,
   },
+  /**
+   * Loading state of authentication.
+   */
   loading: {
     type: Boolean,
     default: false,
   },
+  /**
+   * Error during authentication.
+   */
   error: {
     type: String,
     default: '',
@@ -20,6 +32,9 @@ const form = ref({
   password: '',
 })
 
+/**
+ * Handles the submit action.
+ */
 const handleSubmit = () => {
   props.onSubmit(form.value)
 }
@@ -27,6 +42,9 @@ const handleSubmit = () => {
 
 <template>
   <div>
+    <!--
+      Div containing any potential error message when trying to log in.
+    -->
     <div class="text-2xl flex py-6 flex-col font-parkinsans w-6/12 mx-auto">
       <div
         v-if="error"
@@ -35,6 +53,7 @@ const handleSubmit = () => {
         {{ error.toLowerCase() }}
       </div>
 
+      <!-- Email input box -->
       <input
         v-model="form.email"
         type="email"
@@ -43,6 +62,7 @@ const handleSubmit = () => {
         name="email"
         required
       >
+      <!-- Username input box -->
       <input
         v-model="form.username"
         type="text"
@@ -51,6 +71,7 @@ const handleSubmit = () => {
         name="uname"
         required
       >
+      <!-- Password input box -->
       <input
         v-model="form.password"
         type="password"
@@ -59,7 +80,7 @@ const handleSubmit = () => {
         name="psw"
         required
       >
-
+      <!-- Register button -->
       <button
         class="bg-transparent block h-max w-max border-none mx-auto py-3"
         :disabled="loading"
@@ -70,6 +91,7 @@ const handleSubmit = () => {
         </span>
       </button>
 
+      <!-- Option for user to log in if they already have an account -->
       <div class="text-sm text-gray-400 text-center mt-4">
         already have an account?
         <NuxtLink to="/login">

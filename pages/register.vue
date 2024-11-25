@@ -1,9 +1,15 @@
 <script setup>
+/**
+ * Register page of the website.
+ */
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/stores/auth'
 
-import RegistrationForm from '~/components/RegistrationForm.vue'
-
+/**
+ * Set default layout to page, as well as necessary middleware.
+ * The 'clear-errors' middleware is added to clear any login/register
+ * errors when the page gets refreshed.
+ */
 definePageMeta({
   middleware: ['clear-errors'],
   layout: 'default',
@@ -12,6 +18,12 @@ definePageMeta({
 const authStore = useAuthStore()
 const { error, loading } = storeToRefs(authStore)
 
+/**
+ * Handles user registration.
+ * The registration logic is handled by the `register` method of the `useAuthStore` store.
+ * If the registration is successful, the user gets redirected straight to his new profile page.
+ * @param credentials - Username, email and password of new user.
+ */
 const handleRegister = async (credentials) => {
   const success = await authStore.register(credentials)
   if (success) {
@@ -26,7 +38,7 @@ const handleRegister = async (credentials) => {
       <h1 class="text-5xl text-center text-white font-bold font-parkinsans">
         shaper
       </h1>
-
+      <!-- User registration form -->
       <RegistrationForm
         :on-submit="handleRegister"
         :loading="loading"
