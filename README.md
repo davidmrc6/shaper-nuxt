@@ -52,6 +52,18 @@ After initializing the project, you can run it with the command
 ```bash
 npm run dev
 ```
+
+## Preview
+#### Log in page
+![Log in page](assets/screenshots/login-page.png)
+
+#### Registration page
+![Registration page](assets/screenshots/register-page.png)
+
+#### User profile page
+![User profile page](assets/screenshots/canvas-page.png)
+![User profile edit](assets/screenshots/canvas-edit.png)
+
 ## Developer Notes
 The web application still has some issues which would need to be solved for it to be a complete product.
 
