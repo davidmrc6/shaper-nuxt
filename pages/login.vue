@@ -16,7 +16,7 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
-const { error, loading } = storeToRefs(authStore)
+const { isAuthenticated, error, loading } = storeToRefs(authStore)
 
 /**
  * Handles user login.
@@ -30,6 +30,17 @@ const handleLogin = async (credentials) => {
     await navigateTo(`/profile/${authStore.user.id}`)
   }
 }
+
+/**
+ * If user is already logged in when accessing the login page, redirect to profile page.
+ */
+onMounted(async () => {
+  await authStore.initialize()
+
+  if (isAuthenticated.value) {
+    navigateTo(`/profile/${authStore.user.id}`)
+  }
+})
 </script>
 
 <template>

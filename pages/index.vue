@@ -26,11 +26,6 @@ onMounted(async () => {
   // Wait for auth check to complete
   await authStore.initialize()
 
-  console.log('Auth state:', {
-    user: user.value,
-    isAuthenticated: isAuthenticated.value,
-  })
-
   // Now we can safely check auth state and navigate
   if (!isAuthenticated.value) {
     await navigateTo('/login')
