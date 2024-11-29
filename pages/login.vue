@@ -3,7 +3,7 @@
  * Login page of the website.
  */
 import { storeToRefs } from 'pinia'
-import { useAuthStore } from '~/stores/auth'
+import { useAuthStore } from '~/stores/useAuthStore'
 
 /**
  * Set default layout to page, as well as necessary middleware.

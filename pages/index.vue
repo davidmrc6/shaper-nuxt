@@ -3,7 +3,7 @@
  * Website home page.
  */
 import { storeToRefs } from 'pinia'
-import { useAuthStore } from '~/stores/auth'
+import { useAuthStore } from '~/stores/useAuthStore'
 
 /**
  * Sets default layout to page.

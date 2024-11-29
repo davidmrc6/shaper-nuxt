@@ -33,26 +33,31 @@ defineProps({
       <h1 class="text-3xl text-white font-bold">
         {{ currentUser?.username }}
       </h1>
-      <button
-        class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
-        @click="handleProfileSubmit"
-      >
-        profile
-      </button>
-      <button
-        class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
-        @click="handleLogout"
-      >
-        logout
-      </button>
+      <!-- Add a container for buttons -->
+      <div class="flex flex-col">
+        <button
+          class="text-3xl mt-1 text-gray-400 hover:text-white transition-all duration-200"
+          @click="handleProfileSubmit"
+        >
+          profile
+        </button>
+        <button
+          class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
+          @click="handleLogout"
+        >
+          logout
+        </button>
+      </div>
     </div>
     <div v-else>
-      <button
-        class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
-        @click="handleLoginSubmit"
-      >
-        log in
-      </button>
+      <div class="flex flex-col">
+        <button
+          class="text-3xl text-gray-400 hover:text-white transition-all duration-200"
+          @click="handleLoginSubmit"
+        >
+          login
+        </button>
+      </div>
     </div>
   </div>
 </template>
