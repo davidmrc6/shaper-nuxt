@@ -30,13 +30,6 @@ const isOwner = computed(() => {
   return user.value?.id === parseInt(route.params.id)
 })
 
-/**
- * Check if we can show user settings
- */
-const showUserSettings = computed(() => {
-  return isAuthenticated.value
-})
-
 const showProfileButtons = computed(() => {
   return !['login', 'register'].includes(route.name)
 })
@@ -76,7 +69,7 @@ const handleProfileSubmit = () => {
     <!-- Navigation container -->
     <nav class="fixed top-0 left-0 right-0 z-40">
       <div class="bg-neutral-900 border-b border-neutral-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center h-16">
             <!-- Logo of web application -->
             <h1 class="text-2xl font-bold">
@@ -86,7 +79,7 @@ const handleProfileSubmit = () => {
             <!-- Profile buttons container -->
             <div
               v-if="showProfileButtons"
-              class="relative"
+              class="relative -mx-8"
             >
               <!-- Button to add shapes -->
               <button
