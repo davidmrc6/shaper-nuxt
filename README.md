@@ -61,11 +61,11 @@ npm run dev
 ![Registration page](assets/screenshots/register-page.png)
 
 #### User profile page
-![User profile page](assets/screenshots/canvas-page.png)
-![User profile edit](assets/screenshots/canvas-edit.png)
+![User profile page](assets/screenshots/canvas-page-updated.png)
+![User profile edit](assets/screenshots/canvas-edit-updated.png)
 
 ## Developer Notes
-The web application still has some issues which would need to be solved for it to be a complete product.
+The web application still has some issues which would need to be solved for it to be a complete product. The project is still under active development. For change logs and future features, refer to the [change log](CHANGELOG.md).
 
 #### Code Layout
 Being the first time I have worked with Nuxt, the code might be inconsistent or not following standard practices at some points (there might also be some redundant code at places). Admittedly, despite the application being functional, there are a few "band-aid solutions" to some problems I came across, which I will fix at some point. Also, the documentation could be improved.
