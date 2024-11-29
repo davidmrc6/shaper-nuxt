@@ -55,10 +55,10 @@ npm run dev
 
 ## Preview
 #### Log in page
-![Log in page](assets/screenshots/login-page.png)
+![Log in page](assets/screenshots/login-page-updated.png)
 
 #### Registration page
-![Registration page](assets/screenshots/register-page.png)
+![Registration page](assets/screenshots/register-page-updated.png)
 
 #### User profile page
 ![User profile page](assets/screenshots/canvas-page-updated.png)
