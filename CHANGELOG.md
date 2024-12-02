@@ -4,6 +4,10 @@ Log of changes made to the project. While this is a small scale project and does
 - Planned feature: Add more options for shapes (different shape sizes, different z-indexes, etc.).
 - Bug fixes: Fix user name not appearing on initial page load (after login or registration).
 
+## [1.0.2] - 2024-12-02
+### Fixed
+- Fixed user settings menu not disappearing after user gets redirected.
+
 ## [1.0.1] - 2024-11-29
 ### Fixed
 - Fixed positioning of 'profile' and 'add-shape' buttons, which are now in the navigation bar and are much easier to use on mobile screen resolutions.

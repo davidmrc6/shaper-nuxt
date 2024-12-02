@@ -34,7 +34,10 @@ const showProfileButtons = computed(() => {
   return !['login', 'register'].includes(route.name)
 })
 
-const handleUserSettings = () => {
+/**
+ * Changes visibility of user settings menu.
+ */
+const changeSettingsVisibility = () => {
   isUserSettingsOpen.value = !isUserSettingsOpen.value
 }
 
@@ -44,8 +47,8 @@ const handleUserSettings = () => {
 const handleLogout = async () => {
   const success = await authStore.logout()
   if (success) {
-    isUserSettingsOpen.value = false
     await navigateTo('/login')
+    changeSettingsVisibility()
   }
 }
 
@@ -54,6 +57,7 @@ const handleLogout = async () => {
  */
 const handleLoginSubmit = () => {
   navigateTo('/login')
+  changeSettingsVisibility()
 }
 
 /**
@@ -61,6 +65,7 @@ const handleLoginSubmit = () => {
  */
 const handleProfileSubmit = () => {
   navigateTo(`/profile/${user.value.id}`)
+  changeSettingsVisibility()
 }
 </script>
 
@@ -94,7 +99,7 @@ const handleProfileSubmit = () => {
               <button
                 class="text-4xl px-2 text-gray-400 hover:text-white transition-all duration-200"
                 :class="isUserSettingsOpen ? 'text-white' : 'text-gray-400'"
-                @click="handleUserSettings"
+                @click="changeSettingsVisibility"
               >
                 <Icon name="mdi-light:account" />
               </button>
